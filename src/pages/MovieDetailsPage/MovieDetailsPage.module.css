@@ -1,0 +1,44 @@
+.container {
+  padding: 16px;
+}
+
+.backLink {
+  display: inline-block;
+  margin-bottom: 16px;
+  text-decoration: none;
+  color: blue;
+}
+
+.backLink:hover {
+  color: darkblue;
+}
+
+.details {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.poster {
+  width: 300px;
+  height: auto;
+  border-radius: 8px;
+}
+
+.info {
+  max-width: 600px;
+}
+
+.title {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.links {
+  list-style: none;
+  padding: 0;
+}
+
+.links li {
+  margin-bottom: 4px;
+}
