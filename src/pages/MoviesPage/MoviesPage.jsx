@@ -1,28 +1,45 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { searchMovies } from '../../services/tmdbApi';
 import MovieList from '../../components/MovieList/MovieList';
+import Loader from '../../components/Loader/Loader';
+import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
+import { searchMovies } from '../../servives/TMDB-api.js';
 import css from './MoviesPage.module.css';
 
-export default function MoviesPage() {
+const MoviesPage = () => {
   const [movies, setMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
-  const query = searchParams.get('query') ?? '';
+  const query = searchParams.get('query') || '';
 
   useEffect(() => {
-    if (!query) return;
-    async function fetchData() {
-      const data = await searchMovies(query);
-      setMovies(data);
+    if (!query) {
+      setMovies([]);
+      return;
     }
-    fetchData();
+
+    const fetchMovies = async () => {
+      setIsLoading(true);
+      setError(false);
+      try {
+        const data = await searchMovies(query);
+        setMovies(data.results);
+      } catch (error) {
+        setError(true);
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchMovies();
   }, [query]);
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    const value = e.target.elements.search.value.trim();
-    if (value) {
-      setSearchParams({ query: value });
+  const handleSearch = formData => {
+    const newQuery = formData.get('query');
+    if (newQuery) {
+      setSearchParams({ query: newQuery });
     } else {
       setSearchParams({});
     }
@@ -30,19 +47,19 @@ export default function MoviesPage() {
 
   return (
     <div className={css.container}>
-      <form onSubmit={handleSubmit} className={css.form}>
-        <input
-          type="text"
-          name="search"
-          defaultValue={query}
-          className={css.input}
-          placeholder="Search movies..."
-        />
-        <button type="submit" className={css.button}>
+      <form action={handleSearch}>
+        <input className={css.input} type="text" name="query" placeholder="Enter movie name" />
+        <button className={css.button} type="submit">
           Search
         </button>
       </form>
-      <MovieList movies={movies} />
+
+      {isLoading && <Loader />}
+      {error && <ErrorMessage text="Whoops, something went wrong! Please try again!" />}
+      {movies.length > 0 && <MovieList movies={movies} />}
+      {movies.length === 0 && query && !isLoading && <ErrorMessage text="No movies found." />}
     </div>
   );
-}
+};
+
+export default MoviesPage;

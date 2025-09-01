@@ -1,13 +1,9 @@
 .list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  padding: 0;
-  margin: 20px 0;
-  list-style: none;
-  justify-content: center;
+  list-style-type: disc;
+  list-style-position: outside;
+  padding-left: 20px;
 }
 
-.item a {
-  text-decoration: none;
+.link {
+  color: blue;
 }

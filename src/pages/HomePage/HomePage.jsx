@@ -1,23 +1,41 @@
-import { useEffect, useState } from 'react';
-import { getTrendingMovies } from '../../services/tmdbApi';
+import { useState, useEffect } from 'react';
 import MovieList from '../../components/MovieList/MovieList';
+import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
+import Loader from '../../components/Loader/Loader';
+import { fetchTrendingMovies } from '../../servives/TMDB-api.js';
 import css from './HomePage.module.css';
 
-export default function HomePage() {
+const HomePage = () => {
   const [movies, setMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    async function fetchData() {
-      const data = await getTrendingMovies();
-      setMovies(data);
-    }
-    fetchData();
+    const fetchMovies = async () => {
+      setIsLoading(true);
+      setError(false);
+      try {
+        const data = await fetchTrendingMovies();
+        setMovies(data.results);
+      } catch (error) {
+        setError(true);
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchMovies();
   }, []);
 
   return (
     <div className={css.container}>
-      <h2>Trending Movies</h2>
-      <MovieList movies={movies} />
+      <h1 className={css.title}>Trending today</h1>
+      {isLoading && <Loader />}
+      {error && <ErrorMessage text="Whoops, something went wrong! Please try again!" />}
+      {movies.length > 0 && <MovieList movies={movies} />}
     </div>
   );
-}
+};
+
+export default HomePage;

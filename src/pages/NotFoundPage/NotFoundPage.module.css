@@ -1,9 +1,13 @@
 .container {
+  padding: 50px 30px;
   text-align: center;
-  margin-top: 50px;
 }
 
-a {
-  color: #ff9800;
-  text-decoration: none;
+.text {
+  margin-bottom: 20px;
+  font-size: 20px;
+}
+
+.link {
+  color: blue;
 }

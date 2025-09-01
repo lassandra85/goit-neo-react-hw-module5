@@ -1,15 +1,20 @@
 import { NavLink } from 'react-router-dom';
+import clsx from 'clsx';
 import css from './Navigation.module.css';
 
-export default function Navigation() {
-  return (
-    <nav className={css.nav}>
-      <NavLink to="/" className={({ isActive }) => (isActive ? css.active : css.link)}>
-        Home
-      </NavLink>
-      <NavLink to="/movies" className={({ isActive }) => (isActive ? css.active : css.link)}>
-        Movies
-      </NavLink>
-    </nav>
-  );
-}
+const buildLinkClass = ({ isActive }) => {
+  return clsx(css.link, isActive && css.active);
+};
+
+const Navigation = () => (
+  <nav className={css.navigation}>
+    <NavLink to="/" className={buildLinkClass}>
+      Home
+    </NavLink>
+    <NavLink to="/movies" className={buildLinkClass}>
+      Movies
+    </NavLink>
+  </nav>
+);
+
+export default Navigation;

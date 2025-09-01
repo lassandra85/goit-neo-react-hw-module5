@@ -1,14 +1,24 @@
-import MovieCard from '../MovieCard/MovieCard';
+import { Link, useLocation } from 'react-router-dom';
 import css from './MovieList.module.css';
 
-export default function MovieList({ movies }) {
+const MovieList = ({ movies }) => {
+  const location = useLocation();
+
+  if (!movies || movies.length === 0) {
+    return <p>No available movies</p>;
+  }
+
   return (
     <ul className={css.list}>
       {movies.map(movie => (
-        <li key={movie.id} className={css.item}>
-          <MovieCard movie={movie} />
+        <li key={movie.id}>
+          <Link to={`/movies/${movie.id}`} state={{ from: location }} className={css.link}>
+            <span>{movie.title}</span>
+          </Link>
         </li>
       ))}
     </ul>
   );
-}
+};
+
+export default MovieList;
