@@ -1,11 +1,13 @@
 import MovieCard from '../MovieCard/MovieCard';
-import styles from './MovieList.module.css';
+import css from './MovieList.module.css';
 
 export default function MovieList({ movies }) {
   return (
-    <ul className={styles.list}>
-      {movies.map(m => (
-        <MovieCard key={m.id} movie={m} />
+    <ul className={css.list}>
+      {movies.map(movie => (
+        <li key={movie.id} className={css.item}>
+          <MovieCard movie={movie} />
+        </li>
       ))}
     </ul>
   );

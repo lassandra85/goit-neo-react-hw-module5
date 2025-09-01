@@ -1,35 +1,47 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { searchMovies } from '../../services/tmdbApi';
 import MovieList from '../../components/MovieList/MovieList';
-import styles from './MoviesPage.module.css';
+import css from './MoviesPage.module.css';
 
 export default function MoviesPage() {
-  const [query, setQuery] = useState('');
   const [movies, setMovies] = useState([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const query = searchParams.get('query') ?? '';
 
-  const handleSubmit = async e => {
-    e.preventDefault();
+  useEffect(() => {
     if (!query) return;
-    const results = await searchMovies(query);
-    setMovies(results);
+    async function fetchData() {
+      const data = await searchMovies(query);
+      setMovies(data);
+    }
+    fetchData();
+  }, [query]);
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    const value = e.target.elements.search.value.trim();
+    if (value) {
+      setSearchParams({ query: value });
+    } else {
+      setSearchParams({});
+    }
   };
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>Search Movies</h1>
-      <form onSubmit={handleSubmit} className={styles.form}>
+    <div className={css.container}>
+      <form onSubmit={handleSubmit} className={css.form}>
         <input
-          value={query}
-          onChange={e => setQuery(e.target.value)}
           type="text"
-          className={styles.input}
+          name="search"
+          defaultValue={query}
+          className={css.input}
           placeholder="Search movies..."
         />
-        <button type="submit" className={styles.button}>
+        <button type="submit" className={css.button}>
           Search
         </button>
       </form>
-
       <MovieList movies={movies} />
     </div>
   );

@@ -1,55 +1,54 @@
 import { useEffect, useState, useRef } from 'react';
-import { useParams, useLocation, Link, Outlet } from 'react-router-dom';
+import { useParams, Link, NavLink, Routes, Route, useLocation } from 'react-router-dom';
+import Cast from '../../components/Cast/Cast';
+import Reviews from '../../components/Reviews/Reviews';
 import { getMovieDetails } from '../../services/tmdbApi';
-import styles from './MovieDetailsPage.module.css';
+import css from './MovieDetailsPage.module.css';
 
 export default function MovieDetailsPage() {
   const { movieId } = useParams();
   const location = useLocation();
-  const backLinkRef = useRef(location.state?.from ?? '/');
-
+  const backLink = useRef(location.state?.from || '/movies');
   const [movie, setMovie] = useState(null);
 
   useEffect(() => {
-    getMovieDetails(movieId).then(setMovie).catch(console.error);
+    async function fetchData() {
+      const data = await getMovieDetails(movieId);
+      setMovie(data);
+    }
+    fetchData();
   }, [movieId]);
 
-  if (!movie) return <p>Loading...</p>;
-
-  const posterUrl = movie.poster_path
-    ? `https://image.tmdb.org/t/p/w300${movie.poster_path}`
-    : 'https://via.placeholder.com/300x450?text=No+Image';
+  if (!movie) return <p>Loading movie details...</p>;
 
   return (
-    <div className={styles.container}>
-      <Link to={backLinkRef.current} className={styles.backLink}>
-        ← Go back
+    <div className={css.container}>
+      <Link to={backLink.current} className={css.back}>
+        Go back
       </Link>
+      <h2>{movie.title}</h2>
+      {movie.poster_path && (
+        <img
+          src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+          alt={movie.title}
+          className={css.poster}
+        />
+      )}
+      <p>{movie.overview}</p>
 
-      <div className={styles.details}>
-        <img src={posterUrl} alt={movie.title} className={styles.poster} />
+      <nav className={css.subNav}>
+        <NavLink to="cast" className={({ isActive }) => (isActive ? css.active : css.link)}>
+          Cast
+        </NavLink>
+        <NavLink to="reviews" className={({ isActive }) => (isActive ? css.active : css.link)}>
+          Reviews
+        </NavLink>
+      </nav>
 
-        <div className={styles.info}>
-          <h2 className={styles.title}>{movie.title}</h2>
-          <p>User Score: {Math.round(movie.vote_average * 10)}%</p>
-          <p>Overview: {movie.overview}</p>
-          <p>Genres: {movie.genres.map(g => g.name).join(', ')}</p>
-        </div>
-      </div>
-
-      <hr />
-      <p>Additional information</p>
-      <ul className={styles.links}>
-        <li>
-          <Link to="cast">Cast</Link>
-        </li>
-        <li>
-          <Link to="reviews">Reviews</Link>
-        </li>
-      </ul>
-      <hr />
-
-      <Outlet />
+      <Routes>
+        <Route path="cast" element={<Cast movieId={movieId} />} />
+        <Route path="reviews" element={<Reviews movieId={movieId} />} />
+      </Routes>
     </div>
   );
 }

@@ -1,39 +1,65 @@
 import axios from 'axios';
 
-const TOKEN =
+const API_TOKEN =
   'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjNjRjNjE5MjU2OWM3NjhjYzRmOTAwYjNjNDNlYTczNSIsIm5iZiI6MTY3ODgzODUwOC4yMiwic3ViIjoiNjQxMTBhZWMxNzZhOTQwMGYzYzMwNGI1Iiwic2NvcGVzIjpbImFwaV9yZWFkIl0sInZlcnNpb24iOjF9.b0bhIS71vGXgix2WKbHi_fYurA_h6Cm14y11y6Qhd60';
 
-export const tmdb = axios.create({
-  baseURL: 'https://api.themoviedb.org/3',
+const BASE_URL = 'https://api.themoviedb.org/3';
+
+const options = {
   headers: {
-    Authorization: `Bearer ${TOKEN}`,
-    'Content-Type': 'application/json;charset=utf-8',
+    Authorization: `Bearer ${API_TOKEN}`,
   },
-});
-
-export const getTrendingMovies = async () => {
-  const { data } = await tmdb.get('/trending/movie/day');
-  return data.results;
 };
 
-export const searchMovies = async query => {
-  const { data } = await tmdb.get('/search/movie', {
-    params: { query },
-  });
-  return data.results;
-};
+export async function getTrendingMovies() {
+  try {
+    const res = await axios.get(`${BASE_URL}/trending/movie/day`, options);
+    return res.data.results;
+  } catch (error) {
+    console.error('Error fetching trending movies:', error);
+    return [];
+  }
+}
 
-export const getMovieDetails = async id => {
-  const { data } = await tmdb.get(`/movie/${id}`);
-  return data;
-};
+export async function searchMovies(query) {
+  try {
+    const res = await axios.get(
+      `${BASE_URL}/search/movie?query=${query}&include_adult=false`,
+      options
+    );
+    return res.data.results;
+  } catch (error) {
+    console.error('Error searching movies:', error);
+    return [];
+  }
+}
 
-export const getMovieCredits = async id => {
-  const { data } = await tmdb.get(`/movie/${id}/credits`);
-  return data.cast;
-};
+export async function getMovieDetails(id) {
+  try {
+    const res = await axios.get(`${BASE_URL}/movie/${id}`, options);
+    return res.data;
+  } catch (error) {
+    console.error('Error fetching movie details:', error);
+    return null;
+  }
+}
 
-export const getMovieReviews = async id => {
-  const { data } = await tmdb.get(`/movie/${id}/reviews`);
-  return data.results;
-};
+export async function getMovieCast(id) {
+  try {
+    const res = await axios.get(`${BASE_URL}/movie/${id}/credits`, options);
+    return Array.isArray(res.data.cast) ? res.data.cast : [];
+  } catch (error) {
+    console.error('Error fetching cast:', error);
+    return [];
+  }
+}
+
+export async function getMovieReviews(id) {
+  try {
+    const res = await axios.get(`${BASE_URL}/movie/${id}/reviews`, options);
+    return Array.isArray(res.data.results) ? res.data.results : [];
+  } catch (error) {
+    console.error('Error fetching reviews:', error);
+    return [];
+  }
+}

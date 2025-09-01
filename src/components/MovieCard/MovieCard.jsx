@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import styles from './MovieCard.module.css';
+import css from './MovieCard.module.css';
 
 export default function MovieCard({ movie }) {
   const location = useLocation();
@@ -8,11 +8,9 @@ export default function MovieCard({ movie }) {
     : 'https://via.placeholder.com/200x300?text=No+Image';
 
   return (
-    <li className={styles.item}>
-      <Link to={`/movies/${movie.id}`} state={{ from: location }} className={styles.link}>
-        <img src={posterUrl} alt={movie.title} className={styles.img} />
-        <p>{movie.title}</p>
-      </Link>
-    </li>
+    <Link to={`/movies/${movie.id}`} state={{ from: location }} className={css.card}>
+      <img src={posterUrl} alt={movie.title} className={css.poster} />
+      <h3 className={css.title}>{movie.title}</h3>
+    </Link>
   );
 }

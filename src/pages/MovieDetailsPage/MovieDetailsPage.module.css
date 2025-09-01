@@ -1,44 +1,47 @@
 .container {
-  padding: 16px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
-.backLink {
+.back {
   display: inline-block;
-  margin-bottom: 16px;
+  margin-bottom: 15px;
+  color: #ff9800;
   text-decoration: none;
-  color: blue;
-}
-
-.backLink:hover {
-  color: darkblue;
-}
-
-.details {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 16px;
 }
 
 .poster {
   width: 300px;
-  height: auto;
+  display: block;
+  margin-bottom: 20px;
   border-radius: 8px;
 }
 
-.info {
-  max-width: 600px;
+h2 {
+  margin-bottom: 10px;
 }
 
-.title {
-  font-size: 24px;
-  margin-bottom: 8px;
+p {
+  margin-bottom: 20px;
+  line-height: 1.5;
 }
 
-.links {
-  list-style: none;
-  padding: 0;
+.subNav {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 10px;
 }
 
-.links li {
-  margin-bottom: 4px;
+.link {
+  color: #000;
+  text-decoration: none;
+  font-weight: normal;
+}
+
+.active {
+  font-weight: bold;
+  color: #ff9800;
 }
